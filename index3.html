@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Union — Architectural Edit</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind (Animation Only) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 1.5s ease-out forwards',
+            'slide-up': 'slideUp 1s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(40px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* --- CSS DESIGN SYSTEM --- */
+    :root {
+      --bg-color: #f8f8f5;
+      --text-color: #1a1a1a;
+      --accent-color: #6b4c3e; /* Burnished Copper */
+      --line-color: #dcdcdc;
+      
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Lato', sans-serif;
+      
+      --spacing-unit: 2rem;
+      --container-width: 1400px;
+    }
+
+    /* Reset & Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; transition: color 0.3s; }
+    a:hover { color: var(--accent-color); }
+    
+    img { display: block; width: 100%; height: auto; object-fit: cover; }
+
+    /* Typography */
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; }
+    h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1; }
+    h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+    p { font-size: 1rem; color: #4a4a4a; font-weight: 300; }
+    
+    .caption { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent-color); margin-bottom: 1rem; display: block; }
+
+    /* Layout Utilities */
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 var(--spacing-unit);
+      border-left: 1px solid var(--line-color);
+      border-right: 1px solid var(--line-color);
+      background: #fff;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .grid-row {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--spacing-unit);
+      border-bottom: 1px solid var(--line-color);
+      padding: 4rem 0;
+    }
+
+    /* --- SPECIFIC SECTIONS --- */
+
+    /* Navigation */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line-color);
+    }
+    .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; }
+    .nav-links { display: flex; gap: 2rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* Hero */
+    .hero-section {
+      padding: 6rem 0;
+      text-align: center;
+      border-bottom: 1px solid var(--line-color);
+    }
+    .hero-image-frame {
+      width: 100%;
+      height: 70vh;
+      overflow: hidden;
+      margin: 3rem 0;
+      position: relative;
+    }
+    .hero-image-frame img { width: 100%; height: 100%; transition: transform 2s ease; }
+    .hero-image-frame:hover img { transform: scale(1.03); }
+
+    /* Intro */
+    .intro-text { grid-column: 3 / 11; text-align: center; padding: 4rem 0; }
+    .intro-text p { font-size: 1.5rem; line-height: 1.8; color: #111; }
+
+    /* Mosaic Gallery */
+    .mosaic-section { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-unit); }
+    
+    .mosaic-item { position: relative; }
+    .mosaic-item.large { grid-column: span 2; }
+    .mosaic-item img { height: 100%; max-height: 800px; }
+    
+    /* Image with sticky text */
+    .feature-row { padding: 0; }
+    .feature-image { grid-column: 1 / 7; border-right: 1px solid var(--line-color); }
+    .feature-image img { height: 100%; min-height: 600px; }
+    .feature-content { 
+      grid-column: 7 / 13; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      padding: 4rem; 
+    }
+
+    /* Triple Grid */
+    .triple-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line-color); border-bottom: 1px solid var(--line-color); }
+    .triple-item { background: #fff; padding: 2rem; text-align: center; }
+    .triple-item img { margin-bottom: 1rem; aspect-ratio: 3/4; }
+
+    /* Footer */
+    footer { padding: 4rem 0; text-align: center; border-top: 1px solid var(--line-color); margin-top: auto; }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .grid-row { display: flex; flex-direction: column; padding: 2rem 0; }
+      .nav-links { display: none; }
+      h1 { font-size: 3rem; }
+      .intro-text { padding: 1rem 0; }
+      .intro-text p { font-size: 1.1rem; }
+      .mosaic-section { grid-template-columns: 1fr; }
+      .mosaic-item.large { grid-column: span 1; }
+      .feature-image { border-right: none; border-bottom: 1px solid var(--line-color); }
+      .triple-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Navigation -->
+    <nav class="nav-bar animate-fade-in">
+      <div class="logo">Finest Weddings</div>
+      <div class="nav-links">
+        <a href="#">The Couple</a>
+        <a href="#">The Day</a>
+        <a href="#">Travel</a>
+        <a href="#">RSVP</a>
+      </div>
+      <button class="nav-toggle md:hidden">Menu</button>
+    </nav>
+
+    <!-- Hero Section: Image 1 -->
+    <header class="hero-section">
+      <span class="caption animate-slide-up">Est. 2025</span>
+      <h1 class="animate-slide-up" style="animation-delay: 0.2s">A Modern Union</h1>
+      
+      <div class="hero-image-frame animate-fade-in" style="animation-delay: 0.5s">
+        <!-- IMAGE 1 -->
+        <img src="image 1.jpg" alt="Hero Wedding Shot" onerror="handleMissingImage(this, 1, 'landscape')">
+      </div>
+      
+      <div class="grid-row" style="border:none; padding-top:0;">
+        <div class="intro-text animate-slide-up" style="animation-delay: 0.8s">
+          <p>We invite you to share in a day of intentional design, timeless elegance, and heartfelt celebration.</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Feature Section: Image 2 (Portrait) -->
+    <div class="grid-row feature-row">
+      <div class="feature-image">
+        <!-- IMAGE 2 -->
+        <img src="image 2.jpg" alt="The Couple Portrait" onerror="handleMissingImage(this, 2, 'portrait')">
+      </div>
+      <div class="feature-content">
+        <span class="caption">Our Story</span>
+        <h2>The Beginning</h2>
+        <p>From a chance meeting in a crowded cafe to a sunset proposal on the coast. Our journey has been defined by laughter, adventure, and quiet moments.</p>
+        <br>
+        <p>We are creating a day that reflects this—intimate, warm, and beautiful.</p>
+      </div>
+    </div>
+
+    <!-- Mosaic Gallery: Images 3, 4, 5, 6 -->
+    <div class="grid-row">
+      <div class="mosaic-section">
+        <div class="mosaic-item large">
+          <!-- IMAGE 3 (Large Landscape) -->
+          <img src="image 3.jpg" alt="Venue Wide Shot" onerror="handleMissingImage(this, 3, 'landscape')">
+        </div>
+        <div class="mosaic-item">
+          <!-- IMAGE 4 (Portrait) -->
+          <img src="image 4.jpg" alt="Detail Shot Ring" onerror="handleMissingImage(this, 4, 'portrait')">
+          <div style="padding: 1rem 0;">
+            <span class="caption">The Details</span>
+            <p>Heirlooms & History</p>
+          </div>
+        </div>
+        <div class="mosaic-item">
+          <!-- IMAGE 5 (Portrait) -->
+          <img src="image 5.jpg" alt="Detail Shot Dress" onerror="handleMissingImage(this, 5, 'portrait')">
+          <div style="padding: 1rem 0;">
+            <span class="caption">The Style</span>
+            <p>Modern Silhouette</p>
+          </div>
+        </div>
+        <div class="mosaic-item large">
+          <!-- IMAGE 6 (Large Landscape) -->
+          <img src="image 6.jpg" alt="Atmosphere" onerror="handleMissingImage(this, 6, 'landscape')">
+        </div>
+      </div>
+    </div>
+
+    <!-- Split Feature: Image 7 & 8 -->
+    <div class="grid-row feature-row" style="direction: rtl;">
+      <div class="feature-image" style="border-right:none; border-left:1px solid var(--line-color);">
+        <!-- IMAGE 7 -->
+        <img src="image 7.jpg" alt="Groom Portrait" onerror="handleMissingImage(this, 7, 'portrait')">
+      </div>
+      <div class="feature-content" style="direction: ltr;">
+        <span class="caption">The Ceremony</span>
+        <h2>Vows & Promises</h2>
+        <p>Join us in the garden as the sun sets. We will be exchanging handwritten vows surrounded by our closest family and friends.</p>
+      </div>
+    </div>
+    
+    <!-- Image 8 Banner -->
+    <div style="height: 500px; overflow: hidden; border-bottom: 1px solid var(--line-color);">
+       <!-- IMAGE 8 -->
+       <img src="image 8.jpg" alt="Bridal Party" style="object-position: 50% 20%;" onerror="handleMissingImage(this, 8, 'landscape')">
+    </div>
+
+    <!-- Triple Grid: Images 9, 10, 11 -->
+    <div class="triple-grid">
+      <div class="triple-item">
+        <!-- IMAGE 9 -->
+        <img src="image 9.jpg" alt="Food" onerror="handleMissingImage(this, 9, 'square')">
+        <h3>Taste</h3>
+        <p style="font-size: 0.9rem;">Curated seasonal menu</p>
+      </div>
+      <div class="triple-item">
+        <!-- IMAGE 10 -->
+        <img src="image 10.jpg" alt="Music" onerror="handleMissingImage(this, 10, 'square')">
+        <h3>Sound</h3>
+        <p style="font-size: 0.9rem;">Live jazz quartet</p>
+      </div>
+      <div class="triple-item">
+        <!-- IMAGE 11 -->
+        <img src="image 11.jpg" alt="Drinks" onerror="handleMissingImage(this, 11, 'square')">
+        <h3>Sip</h3>
+        <p style="font-size: 0.9rem;">Signature cocktails</p>
+      </div>
+    </div>
+
+    <!-- Final CTA: Image 12 -->
+    <div class="hero-section" style="padding-bottom: 0;">
+      <span class="caption">Join Us</span>
+      <h2>RSVP by August 1st</h2>
+      <div class="hero-image-frame" style="height: 50vh; margin-bottom: 0;">
+        <!-- IMAGE 12 -->
+        <img src="image 12.jpg" alt="Final Goodbye" onerror="handleMissingImage(this, 12, 'landscape')">
+      </div>
+    </div>
+
+    <footer>
+      <p class="caption">Finest Weddings © 2025</p>
+    </footer>
+
+  </div>
+
+  <script>
+    /**
+     * Fallback Script
+     * This ensures the design looks good even if the user hasn't uploaded 
+     * 'image 1.jpg' locally yet. It swaps missing images for high-quality
+     * Unsplash placeholders based on orientation.
+     */
+    function handleMissingImage(img, index, type) {
+      console.log(`Image ${index} not found locally. Using placeholder.`);
+      
+      const placeholders = {
+        'landscape': [
+          'https://images.unsplash.com/photo-1519225421980-715cb0202128?q=80&w=2070',
+          'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070',
+          'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=2070',
+          'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2070',
+          'https://images.unsplash.com/photo-1520854221256-17451cc330e7?q=80&w=2070'
+        ],
+        'portrait': [
+          'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=987',
+          'https://images.unsplash.com/photo-1522673607200-1645062cd6d2?q=80&w=988',
+          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=987',
+          'https://images.unsplash.com/photo-1529636721198-d17e53f0e071?q=80&w=987'
+        ],
+        'square': [
+          'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800',
+          'https://images.unsplash.com/photo-1507915977619-6ccfe8003ae6?q=80&w=800',
+          'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=800'
+        ]
+      };
+
+      // Select a random image from the appropriate category to keep it fresh
+      const arr = placeholders[type] || placeholders['landscape'];
+      const randomUrl = arr[index % arr.length]; // Use index to be deterministic per refresh
+      
+      img.onerror = null; // prevent infinite loop
+      img.src = randomUrl;
+    }
+  </script>
+
+</body>
+</html>
